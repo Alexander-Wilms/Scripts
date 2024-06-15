@@ -1,0 +1,12 @@
+# execute nmap with sudo to get MAC addresses
+# https://stackoverflow.com/a/14165492/2278742
+
+# use xmlstarlet to format output as table
+# https://unix.stackexchange.com/a/585787/148421
+
+sudo nmap -sn -oX - '192.168.2.*' | xmlstarlet sel -t \
+  -m '/nmaprun/host[status/@state="up"]' \
+  -v 'address[@addrtype="ipv4"]/@addr' -o $'\t' \
+  -v 'address[@addrtype="mac"]/@addr' -o $'\t' \
+  -v 'address[@addrtype="mac"]/@vendor' -o $'\t' \
+  -v 'hostnames/hostname[1]/@name' -n | column -t -s$'\t'
